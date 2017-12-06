@@ -1,37 +1,51 @@
 ## Welcome to GitHub Pages
 
-You can use the [editor on GitHub](https://github.com/Grayhu07/Final_Project_STAT184/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
-
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+This webpage is about my Final project of STAT 184 class, I use the data I found from [Data.gov](https://catalog.data.gov/dataset/maryland-statewide-vehicle-crash-data-dictionary). The data is about car crash in Maryland state.
 
 ### Markdown
-
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
-
+I will provide my code in this section, but I will link the html at the bottom so you will have a better idea about my project.
 ```markdown
-Syntax highlighted code block
-
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
+library(ggplot2)
+library(lubridate)
+Crash <- read.csv("Crash_Reporting_-_Drivers_Data.csv")
+Vehicle_type<-
+  Crash %>% 
+    mutate(date=as.Date(mdy_hms(Crash.Date.Time))) %>% 
+    select(date,Vehicle.Body.Type)
+Car<-
+  Vehicle_type %>% 
+  group_by(Vehicle.Body.Type) %>% 
+  summarize(total=n())
+head(arrange(Car,desc(total)),n=3)
+Vehicle_type %>% 
+  group_by(date,Vehicle.Body.Type) %>% 
+  summarize(count=n()) %>% 
+  ggplot(aes(x=date,y=count)) + geom_point(size=0.5) + facet_wrap( ~ Vehicle.Body.Type)
+Vehicle_type %>% 
+  group_by(date,Vehicle.Body.Type) %>% 
+  summarize(count=n()) %>% 
+  ggplot(aes(x=date,y=count)) + geom_point(size=0.1) + facet_wrap( ~ Vehicle.Body.Type) + ylim(0,20)
+library(maps)
+C_map <- map_data("state","Maryland")
+counties <- map_data("county")
+C_county <- subset(counties, region == "maryland")
+map1 <- ggplot(C_county) +
+  geom_polygon(aes(x = long, y = lat, group = group), fill = "gray", colour = "white")
+map1 + geom_point(data = Crash, aes(x = Longitude, y = Latitude), colour = "red",size=0.01)
+Passenger <-
+  Crash %>% 
+  mutate(date=as.Date(mdy_hms(Crash.Date.Time))) %>% 
+  select(Vehicle.Body.Type,Weather, Light, date) %>% 
+  filter(Vehicle.Body.Type== "PASSENGER CAR")
+keeps <- levels(Passenger$Weather)
+keeps <- keeps[-c(6, 7, 12)]
+Passenger %>% 
+  filter(Weather %in% keeps) %>% 
+  filter(Light %in% c("DARK NO LIGHTS","DAWN","DAYLIGHT","DUSK")) %>% 
+  group_by(date,Vehicle.Body.Type, Weather,Light) %>% 
+  summarize(count=n()) %>% 
+  ggplot(aes(x=date,y=count,color=Weather,shape=Light)) + geom_point(size=1)
 ```
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+For the detailed information, please [check]
 
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/Grayhu07/Final_Project_STAT184/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
