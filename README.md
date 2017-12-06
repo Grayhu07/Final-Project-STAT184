@@ -47,5 +47,5 @@ Passenger %>%
   ggplot(aes(x=date,y=count,color=Weather,shape=Light)) + geom_point(size=1)
 ```
 
-For the detailed information, please
+For the detailed information, please [check] (https://rawgit.com/Grayhu07/Final_Project_STAT184/master/final_project.html)
 
