@@ -1,4 +1,4 @@
-## Welcome to GitHub Pages
+## Welcome to Kechen Hu's final project for STAT184
 
 This webpage is about my Final project of STAT 184 class, I use the data I found from [Data.gov](https://catalog.data.gov/dataset/maryland-statewide-vehicle-crash-data-dictionary). The data is about car crash in Maryland state.
 
